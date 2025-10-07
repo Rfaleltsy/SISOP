@@ -98,22 +98,7 @@ if (isset($_GET['editar']) && intval($_GET['editar']) > 0) {
     <script>tinymce.init({selector: 'textarea[name="cuerpo"]', height: 300, plugins: 'link image code', toolbar: 'undo redo | bold italic | alignleft aligncenter | bullist numlist | link image'});</script>
 </head>
 <body>
-    <!-- Navbar consistente -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">🛒 Adminia</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="logout.php">Cerrar Sesión</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php include 'includes/navbar.php'; ?>
 
     <div class="container mt-4">
         <h1 class="mb-4">📝 Gestión de Contenidos (<?= ucfirst($rol) ?>)</h1>

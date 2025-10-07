@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($nombre) && !empty($correo) && strlen($contraseña) >= 6) {
         $hash = password_hash($contraseña, PASSWORD_DEFAULT);
         try {
-            // SQL con 4 placeholders POSICIONALES (?) —orden exacto: nombre, correo, hash, rol
-            $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, contraseña, rol) VALUES (?, ?, ?, ?)");
+            // SQL con 5 placeholders - incluye activo = 1 por defecto
+            $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, contraseña, rol, activo) VALUES (?, ?, ?, ?, 1)");
             
             // Bind por posición (1-based index)
             $stmt->bindValue(1, $nombre, PDO::PARAM_STR);
@@ -40,54 +40,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - Adminia</title>
-     <!-- Bootstrap CSS CDN -->
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-   <!-- Bootstrap JS CDN (al final de </body>, antes de cierre) -->
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-   
-
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; padding: 20px; }
-        form { border: 1px solid #ccc; padding: 20px; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
-        .error { color: red; margin: 10px 0; }
-        .success { color: green; margin: 10px 0; }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
-    <h1>Registro de Usuario</h1>
-    <?php if ($error): ?>
-        <p class="error"><?= htmlspecialchars($error) ?></p>
-    <?php endif; ?>
-    <?php if ($success): ?>
-        <p class="success"><?= htmlspecialchars($success) ?></p>
-        <p><a href="login.php">Ir a Login</a></p>
-    <?php endif; ?>
+<body style="background: linear-gradient(135deg, #F8F9FA 0%, #E3F2FD 100%); min-height: 100vh;">
+    <div class="auth-container">
+        <h1>🛒 Adminia</h1>
+        <h3 class="text-center mb-4" style="color: #25282B; font-size: 1.5rem;">Crear Cuenta</h3>
+        
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+        <?php if ($success): ?>
+            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+            <div class="text-center">
+                <a href="login.php" class="btn btn-primary">Ir a Iniciar Sesión</a>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (!$success): ?>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre Completo</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="100" value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>">
+            </div>
+            
+            <div class="mb-3">
+                <label for="correo" class="form-label">Correo Electrónico</label>
+                <input type="email" id="correo" name="correo" class="form-control" required maxlength="100" value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>">
+            </div>
+            
+            <div class="mb-3">
+                <label for="contraseña" class="form-label">Contraseña (mínimo 6 caracteres)</label>
+                <input type="password" id="contraseña" name="contraseña" class="form-control" required minlength="6">
+            </div>
+            
+            <div class="mb-3">
+                <label for="rol" class="form-label">Tipo de Cuenta</label>
+                <select id="rol" name="rol" class="form-select">
+                    <option value="cliente" <?= ($_POST['rol'] ?? 'cliente') === 'cliente' ? 'selected' : '' ?>>Cliente</option>
+                    <option value="editor" <?= ($_POST['rol'] ?? '') === 'editor' ? 'selected' : '' ?>>Editor</option>
+                    <option value="admin" <?= ($_POST['rol'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Registrar</button>
+        </form>
+        <?php endif; ?>
+        
+        <div class="text-center mt-4">
+            <p>¿Ya tienes cuenta? <a href="login.php" style="color: #2F80ED; font-weight: 600;">Inicia sesión aquí</a></p>
+            <p><a href="index.php" style="color: #6C757D;">Volver al inicio</a></p>
+        </div>
+    </div>
     
-    <?php if (!$success): ?>
-    <form method="POST">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required maxlength="100" value="<?= htmlspecialchars($_POST['nombre'] ?? '') ?>">
-        
-        <label for="correo">Correo:</label>
-        <input type="email" id="correo" name="correo" required maxlength="100" value="<?= htmlspecialchars($_POST['correo'] ?? '') ?>">
-        
-        <label for="contraseña">Contraseña:</label>
-        <input type="password" id="contraseña" name="contraseña" required minlength="6">
-        
-        <label for="rol">Rol:</label>
-        <select id="rol" name="rol">
-            <option value="cliente" <?= ($_POST['rol'] ?? 'cliente') === 'cliente' ? 'selected' : '' ?>>Cliente</option>
-            <option value="editor" <?= ($_POST['rol'] ?? '') === 'editor' ? 'selected' : '' ?>>Editor</option>
-            <option value="admin" <?= ($_POST['rol'] ?? '') === 'admin' ? 'selected' : '' ?>>Admin</option>
-        </select>
-        
-        <button type="submit">Registrar</button>
-    </form>
-    <?php endif; ?>
-    
-    <p><a href="login.php">¿Ya tienes cuenta? Inicia sesión</a></p>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

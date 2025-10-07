@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_carrito'])) {
 }
 
 // Cargar productos activos (con JOIN a imagenes y usuarios)
+$search = $_GET['search'] ?? '';
 try {
     $sql = "
         SELECT p.*, u.nombre as vendedor, i.url as imagen_url 
@@ -37,46 +38,45 @@ try {
             ORDER BY id_imagen DESC
         ) i ON p.id_producto = i.id_producto 
         WHERE p.activo = 1 AND p.stock > 0
-        ORDER BY p.nombre ASC
     ";
-    $stmt = $pdo->query($sql);
+    
+    // Agregar filtro de búsqueda si existe
+    if ($search) {
+        $sql .= " AND (p.nombre LIKE ? OR p.descripcion LIKE ?)";
+    }
+    
+    $sql .= " ORDER BY p.nombre ASC";
+    
+    // Ejecutar query con o sin parámetros
+    if ($search) {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(["%$search%", "%$search%"]);
+    } else {
+        $stmt = $pdo->query($sql);
+    }
+    
     $productos = $stmt->fetchAll();
 } catch (PDOException $e) {
     $productos = [];
     $error = 'Error al cargar productos.';
-}
-$search = $_GET['search'] ?? '';
-if ($search) {
-    $sql .= " AND (p.nombre LIKE ? OR p.descripcion LIKE ?)";
-    $params = ["%$search%", "%$search%"];
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $productos = $stmt->fetchAll();
-} else {
-    // Query original sin filtro
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- ... (title y estilos existentes) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - Adminia</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Estilos existentes + */
-        .producto-card { margin-bottom: 20px; }
-        img { max-width: 100%; height: auto; }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-    <!-- Navbar (copia de index.php) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">🛒 Adminia</a>
-            <!-- ... (navbar existente) -->
-        </div>
-    </nav>
+    <?php include 'includes/navbar.php'; ?>
 
     <div class="container mt-4">
         <h1 class="text-center mb-4">🛒 Tienda Adminia</h1>
@@ -101,19 +101,16 @@ if ($search) {
         <?php else: ?>
             <div class="row">
                 <?php foreach ($productos as $prod): ?>
-                    <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="col-md-4 col-sm-6 mb-4 producto-card">
                         <div class="card h-100">
-                            <?php if ($prod['imagen_url'] && file_exists($prod['imagen_url'])): ?>
-                                <img src="<?= htmlspecialchars($prod['imagen_url']) ?>" class="card-img-top" alt="<?= htmlspecialchars($prod['nombre']) ?>">
-                            <?php endif; ?>
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($prod['nombre']) ?></h5>
                                 <p class="card-text"><?= htmlspecialchars($prod['descripcion']) ?></p>
-                                <p class="fw-bold">$<?= number_format($prod['precio'], 2) ?></p>
-                                <p class="small">Stock: <?= $prod['stock'] ?> | Vendedor: <?= htmlspecialchars($prod['vendedor']) ?></p>
-                                <form method="POST" class="d-flex align-items-center">
+                                <p class="card-text"><strong>$<?= number_format($prod['precio'], 2) ?></strong></p>
+                                <p class="card-text small">Stock: <?= $prod['stock'] ?> | Vendedor: <?= htmlspecialchars($prod['vendedor']) ?></p>
+                                <form method="POST" class="d-flex align-items-center gap-2">
                                     <input type="hidden" name="id_producto" value="<?= $prod['id_producto'] ?>">
-                                    <input type="number" name="cantidad" value="1" min="1" max="<?= $prod['stock'] ?>" class="form-control me-2" style="width: 80px;">
+                                    <input type="number" name="cantidad" value="1" min="1" max="<?= $prod['stock'] ?>" class="form-control" style="width: 80px;">
                                     <button type="submit" name="agregar_carrito" class="btn btn-success">Agregar</button>
                                 </form>
                             </div>
@@ -123,11 +120,11 @@ if ($search) {
             </div>
         <?php endif; ?>
     </div>
-      <footer class="bg-light py-3 mt-5">
-      <div class="container text-center">
-          <p>&copy; Adminia | <a href="pagina.php?slug=sobre-nosotros">Sobre Nosotros</a> | <a href="pagina.php?slug=contacto">Contacto</a></p>
-      </div>
-  </footer>
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2025 Adminia | <a href="sobre-nosotros.php">Sobre Nosotros</a> | Proyecto Académico</p>
+        </div>
+    </footer>
   
 
     <!-- Bootstrap JS -->

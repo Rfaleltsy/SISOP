@@ -1,0 +1,14 @@
+{
+  "php.validate.enable": true,
+  "php.validate.executablePath": "c:/xampp/php/php.exe",
+  "files.associations": {
+    "*.php": "php",
+    "*.json": "jsonc"
+  },
+  "emmet.includeLanguages": {
+    "php": "html"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
+}

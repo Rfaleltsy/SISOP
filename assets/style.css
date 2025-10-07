@@ -1,0 +1,427 @@
+/* Estilos globales modernos - Estilo PrestaShop con degradado celeste a azul */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body { 
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+    background-color: #ffffff;
+    color: #25282B;
+    line-height: 1.6;
+}
+
+/* Navbar estilo PrestaShop */
+.navbar {
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2F80ED !important;
+    letter-spacing: -0.5px;
+}
+
+.navbar-nav .nav-link {
+    color: #25282B !important;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem !important;
+    transition: color 0.2s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #2F80ED !important;
+}
+
+/* Hero Section estilo PrestaShop */
+.hero { 
+    background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+    color: white; 
+    padding: 100px 0 120px 0; 
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero .lead {
+    font-size: 1.35rem;
+    font-weight: 400;
+    margin-bottom: 2.5rem;
+    opacity: 0.95;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.hero .btn {
+    padding: 0.875rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.hero .btn-light {
+    background: #ffffff;
+    color: #2F80ED;
+    border: none;
+}
+
+.hero .btn-light:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.hero .btn-outline-light {
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    background: transparent;
+}
+
+.hero .btn-outline-light:hover {
+    background: #ffffff;
+    color: #2F80ED;
+    transform: translateY(-2px);
+}
+
+/* Productos Grid */
+.productos-grid { 
+    padding: 80px 0;
+    background-color: #F8F9FA;
+}
+
+.productos-grid h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #25282B;
+    margin-bottom: 3rem;
+    letter-spacing: -0.5px;
+}
+
+.producto-card { 
+    margin-bottom: 30px;
+}
+
+.producto-card .card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: #ffffff;
+}
+
+.producto-card .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.producto-card img { 
+    max-height: 250px; 
+    object-fit: cover;
+    width: 100%;
+    transition: transform 0.3s ease;
+}
+
+.producto-card .card:hover img {
+    transform: scale(1.05);
+}
+
+.producto-card .card-body {
+    padding: 1.5rem;
+}
+
+.producto-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #25282B;
+    margin-bottom: 0.75rem;
+}
+
+.producto-card .card-text {
+    color: #52575C;
+    font-size: 0.95rem;
+}
+
+.producto-card .card-text strong {
+    color: #2F80ED;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+/* Botones con degradado */
+.btn-custom { 
+    background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+    border: none;
+    color: white;
+    padding: 0.625rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-custom:hover { 
+    background: linear-gradient(135deg, #2F80ED 0%, #1e5bb8 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(47, 128, 237, 0.4);
+    color: white;
+}
+
+.btn-success {
+    background: #34A853;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-success:hover {
+    background: #2D8E47;
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.875rem 2.5rem;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2F80ED 0%, #1e5bb8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(47, 128, 237, 0.4);
+}
+
+.btn-warning {
+    background: #FFA726;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-warning:hover {
+    background: #FB8C00;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #EF5350;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    background: #E53935;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6C757D;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background: #5A6268;
+    transform: translateY(-1px);
+}
+
+/* Footer estilo PrestaShop */
+footer { 
+    background: #25282B;
+    color: #ffffff; 
+    padding: 60px 0 30px 0;
+    margin-top: 0;
+}
+
+footer a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin: 0 15px;
+}
+
+footer a:hover {
+    color: #56CCF2;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+/* Input styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    padding: 0.625rem 0.875rem;
+    transition: border-color 0.2s ease;
+    font-size: 0.95rem;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #2F80ED;
+    box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
+}
+
+/* Tables */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-dark {
+    background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+}
+
+/* Page Headers */
+h1, h2, h3, h4, h5, h6 {
+    color: #25282B;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Container spacing */
+.container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.dashboard-card a {
+    text-decoration: none;
+}
+
+/* Auth pages */
+.auth-container {
+    max-width: 450px;
+    margin: 80px auto;
+    padding: 2.5rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.auth-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.auth-container .btn {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1.05rem;
+    margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero .lead {
+        font-size: 1.1rem;
+    }
+    
+    .productos-grid h2 {
+        font-size: 2rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+}

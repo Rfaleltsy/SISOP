@@ -1,9 +1,9 @@
 <?php
 // Configuración de la DB (reemplaza con tus valores reales, ¡NO compartas!)
-$host = 'localhost';
+$host = '20.120.228.21';
 $dbname = 'adminia';
-$username = 'root';  // O tu usuario de MySQL
-$password = '';      // Contraseña de MySQL (vacía por default en XAMPP local)
+$username = 'blazer';  // O tu usuario de MySQL
+$password = 'blazer';      // Contraseña de MySQL (vacía por default en XAMPP local)
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

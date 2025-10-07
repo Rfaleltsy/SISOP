@@ -136,36 +136,33 @@ if (!empty($_SESSION['carrito'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Carrito - Adminia</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
     <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content-wrapper {
+            flex: 1;
+        }
+        
         img { max-width: 50px; height: auto; }
-        .total { font-size: 1.2rem; font-weight: bold; }
+        .total { font-size: 1.5rem; font-weight: bold; color: #2F80ED; }
     </style>
 </head>
 <body>
-    <!-- Navbar Consistente (copia de index.php o dashboard) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">🛒 Adminia</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="tienda.php">Tienda</a></li>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <li class="nav-item"><a class="nav-link" href="dashboard.php">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="logout.php">Cerrar Sesión</a></li>
-                    <?php endif; ?>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php include 'includes/navbar.php'; ?>
 
-    <div class="container mt-4">
+    <div class="content-wrapper">
+        <div class="container mt-4">
         <h1 class="mb-4">🛍️ Mi Carrito</h1>
         <a href="tienda.php" class="btn btn-secondary mb-3">Continuar Comprando</a>
         
@@ -190,7 +187,7 @@ if (!empty($_SESSION['carrito'])) {
         <?php else: ?>
             <form method="POST">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header">
                         <h5>Items en el Carrito (<?= count($items) ?>)</h5>
                     </div>
                     <div class="card-body">
@@ -233,8 +230,8 @@ if (!empty($_SESSION['carrito'])) {
                                 </tbody>
                             </table>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-4 p-3 bg-light rounded">
-                            <h4 class="text-success total">Total: $<?= number_format($total_carrito, 2) ?></h4>
+                        <div class="d-flex justify-content-between align-items-center mt-4 p-4" style="background: linear-gradient(135deg, #F8F9FA 0%, #E3F2FD 100%); border-radius: 12px;">
+                            <h4 class="total">Total: $<?= number_format($total_carrito, 2) ?></h4>
                             <div>
                                 <button type="submit" name="actualizar" class="btn btn-primary me-2">Actualizar Carrito</button>
                                 <?php if ($id_usuario > 0): ?>
@@ -250,12 +247,14 @@ if (!empty($_SESSION['carrito'])) {
                 </div>
             </form>
         <?php endif; ?>
+        </div>
     </div>
-      <footer class="bg-light py-3 mt-5">
-      <div class="container text-center">
-          <p>&copy; Adminia | <a href="pagina.php?slug=sobre-nosotros">Sobre Nosotros</a> | <a href="pagina.php?slug=contacto">Contacto</a></p>
-      </div>
-  </footer>
+    
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2025 Adminia | <a href="sobre-nosotros.php">Sobre Nosotros</a> | Proyecto Académico</p>
+        </div>
+    </footer>
   
 
     <!-- Bootstrap JS -->

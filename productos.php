@@ -200,13 +200,16 @@ if (isset($_GET['editar'])) {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos - Adminia</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
-    <!-- Navbar (copia consistente) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> <!-- ... --> </nav>
+<body style="background-color: #F8F9FA;">
+    <?php include 'includes/navbar.php'; ?>
 
     <div class="container mt-4">
         <h1 class="mb-4">📦 Gestión de Productos</h1>
@@ -218,7 +221,7 @@ if (isset($_GET['editar'])) {
         
         <!-- Form para Agregar/Editar (ejemplo simple) -->
         <div class="card mb-4">
-            <div class="card-header bg-success text-white">
+            <div class="card-header">
                 <h5>Agregar Nuevo Producto</h5>
             </div>
             <div class="card-body">
@@ -259,7 +262,7 @@ if (isset($_GET['editar'])) {
         
         <!-- Lista de Productos -->
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header">
                 <h5>Productos Existentes</h5>
             </div>
             <div class="card-body">
