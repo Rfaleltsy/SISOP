@@ -2,7 +2,6 @@
 session_start();
 require_once 'conexion.php';
 
-// Verificar login y rol admin
 if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'admin') {
     header('Location: login.php?error=no_permiso');
     exit;
@@ -11,7 +10,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'admin') {
 $id_usuario_actual = $_SESSION['user_id'];
 $success = $error = '';
 
-// Cargar lista de usuarios
 try {
     $stmt = $pdo->query("
         SELECT id_usuario, nombre, correo, rol, activo, fecha_registro 
@@ -24,19 +22,17 @@ try {
     $error = 'Error al cargar usuarios.';
 }
 
-// Manejar acciones POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['agregar']) || isset($_POST['editar'])) {
         $nombre = trim($_POST['nombre'] ?? '');
         $correo = trim($_POST['correo'] ?? '');
-        $contraseña = $_POST['contraseña'] ?? '';  // Opcional al editar
+        $contraseña = $_POST['contraseña'] ?? ''; 
         $rol = $_POST['rol'] ?? 'cliente';
         $activo = intval($_POST['activo'] ?? 1);
         
         if (!empty($nombre) && !empty($correo)) {
             try {
                 if (isset($_POST['agregar'])) {
-                    // Insertar nuevo (contraseña requerida)
                     if (strlen($contraseña) < 6) {
                         $error = 'Contraseña mínima 6 caracteres.';
                     } else {
@@ -46,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $success = '¡Usuario agregado!';
                     }
                 } else {
-                    // Editar (verificar no es el admin actual)
                     $id_usuario = intval($_POST['id_usuario'] ?? 0);
                     if ($id_usuario === $id_usuario_actual) {
                         $error = 'No puedes editar tu propia cuenta.';
@@ -83,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'No puedes eliminar tu propia cuenta.';
         } elseif ($id_usuario > 0) {
             try {
-                // Soft-delete: Set activo=0 (no borra datos relacionados)
                 $stmt = $pdo->prepare("UPDATE usuarios SET activo = 0 WHERE id_usuario = ?");
                 $stmt->execute([$id_usuario]);
                 $success = '¡Usuario desactivado!';
@@ -105,7 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Obtener usuario para editar
 $usuario_edit = null;
 if (isset($_GET['editar'])) {
     $id_usuario = intval($_GET['editar'] ?? 0);
@@ -153,7 +146,6 @@ if (isset($_GET['editar'])) {
             <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
         
-        <!-- Formulario para agregar o editar -->
         <div class="card mb-4">
             <div class="card-header">
                 <h5><?= $usuario_edit ? 'Editar Usuario' : 'Agregar Nuevo Usuario' ?></h5>
@@ -208,7 +200,6 @@ if (isset($_GET['editar'])) {
             </div>
         </div>
         
-        <!-- Lista de usuarios -->
         <div class="card">
             <div class="card-header">
                 <h5>Lista de Usuarios</h5>

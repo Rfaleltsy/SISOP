@@ -10,7 +10,26 @@ if (!isset($_SESSION['user_id'])) {
 
 $rol = $_SESSION['rol'];
 $id_usuario = $_SESSION['user_id'];
+
+// Manejar mensajes de éxito/error
 $success = $error = '';
+if (isset($_GET['success'])) {
+    switch ($_GET['success']) {
+        case 'agregado':
+            $success = '¡Producto agregado!';
+            break;
+        case 'actualizado':
+            $success = '¡Producto actualizado!';
+            break;
+        case 'eliminado':
+            $success = '¡Producto eliminado!';
+            break;
+    }
+}
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+    unset($_SESSION['error']);
+}
 
 // Función helper para manejar upload y insert/actualizar en imagenes
 function subirImagen($archivo, $pdo, $id_producto) {
@@ -58,15 +77,10 @@ function subirImagen($archivo, $pdo, $id_producto) {
 // Cargar productos con JOIN a imagenes (imagen principal: la más reciente)
 try {
     $sql = "
-        SELECT p.*, u.nombre as vendedor, i.url as imagen_url 
+        SELECT p.*, u.nombre as vendedor, 
+               (SELECT url FROM imagenes WHERE id_producto = p.id_producto ORDER BY id_imagen DESC LIMIT 1) as imagen_url 
         FROM productos p 
         JOIN usuarios u ON p.id_usuario = u.id_usuario 
-        LEFT JOIN (
-            SELECT id_producto, url 
-            FROM imagenes 
-            GROUP BY id_producto 
-            ORDER BY id_imagen DESC  -- Toma la más reciente
-        ) i ON p.id_producto = i.id_producto 
         ORDER BY p.fecha_creacion DESC
     ";
     $stmt = $pdo->query($sql);
@@ -83,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descripcion = trim($_POST['descripcion'] ?? '');
         $precio = floatval($_POST['precio'] ?? 0);
         $stock = intval($_POST['stock'] ?? 0);
+        $activo = intval($_POST['activo'] ?? 1);
         
         if (!empty($nombre) && $precio >= 0 && $stock >= 0) {
             try {
@@ -91,8 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 if (isset($_POST['agregar'])) {
                     // Insertar nuevo producto primero
-                    $stmt = $pdo->prepare("INSERT INTO productos (nombre, descripcion, precio, stock, id_usuario, fecha_creacion) VALUES (?, ?, ?, ?, ?, NOW())");
-                    $stmt->execute([$nombre, $descripcion, $precio, $stock, $id_usuario]);
+                    $stmt = $pdo->prepare("INSERT INTO productos (nombre, descripcion, precio, stock, activo, id_usuario, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+                    $stmt->execute([$nombre, $descripcion, $precio, $stock, $activo, $id_usuario]);
                     $id_producto = $pdo->lastInsertId();
                     
                     // Subir imagen si hay
@@ -103,7 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     
-                    $success = '¡Producto agregado!';
+                    // Redirigir para evitar reenvío de formulario
+                    header('Location: productos.php?success=agregado');
+                    exit;
                 } else {
                     // Editar
                     $id_producto = intval($_POST['id_producto'] ?? 0);
@@ -123,8 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         
                         // Actualizar producto
-                        $stmt = $pdo->prepare("UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, stock = ? WHERE id_producto = ? AND id_usuario = ?");
-                        $stmt->execute([$nombre, $descripcion, $precio, $stock, $id_producto, $id_usuario]);
+                        $stmt = $pdo->prepare("UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, stock = ?, activo = ? WHERE id_producto = ? AND id_usuario = ?");
+                        $stmt->execute([$nombre, $descripcion, $precio, $stock, $activo, $id_producto, $id_usuario]);
                         
                         // Subir nueva imagen si hay
                         if ($hay_imagen_nueva) {
@@ -134,14 +151,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             }
                         }
                         
-                        $success = '¡Producto actualizado!';
+                        // Redirigir para evitar reenvío de formulario
+                        header('Location: productos.php?success=actualizado');
+                        exit;
                     }
                 }
             } catch (PDOException $e) {
-                $error = 'Error al guardar: ' . htmlspecialchars($e->getMessage());
+                $_SESSION['error'] = 'Error al guardar: ' . htmlspecialchars($e->getMessage());
+                header('Location: productos.php');
+                exit;
             }
         } else {
-            $error = 'Completa los campos correctamente.';
+            $_SESSION['error'] = 'Completa los campos correctamente.';
+            header('Location: productos.php');
+            exit;
         }
     } elseif (isset($_POST['eliminar'])) {
         $id_producto = intval($_POST['id_producto'] ?? 0);
@@ -162,9 +185,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_del = $pdo->prepare("DELETE FROM productos WHERE id_producto = ? AND id_usuario = ?");
                 $stmt_del->execute([$id_producto, $id_usuario]);
                 
-                $success = '¡Producto eliminado!';
+                // Redirigir para evitar reenvío de formulario
+                header('Location: productos.php?success=eliminado');
+                exit;
             } catch (PDOException $e) {
-                $error = 'Error al eliminar.';
+                $_SESSION['error'] = 'Error al eliminar.';
+                header('Location: productos.php');
+                exit;
             }
         }
     }

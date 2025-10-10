@@ -28,15 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['agregar_carrito'])) {
 $search = $_GET['search'] ?? '';
 try {
     $sql = "
-        SELECT p.*, u.nombre as vendedor, i.url as imagen_url 
+        SELECT p.*, u.nombre as vendedor, 
+               (SELECT url FROM imagenes WHERE id_producto = p.id_producto ORDER BY id_imagen DESC LIMIT 1) as imagen_url 
         FROM productos p 
         JOIN usuarios u ON p.id_usuario = u.id_usuario 
-        LEFT JOIN (
-            SELECT id_producto, url 
-            FROM imagenes 
-            GROUP BY id_producto 
-            ORDER BY id_imagen DESC
-        ) i ON p.id_producto = i.id_producto 
         WHERE p.activo = 1 AND p.stock > 0
     ";
     

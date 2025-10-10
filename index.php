@@ -2,24 +2,17 @@
 session_start();
 require_once 'conexion.php';
 
-// Inicializar carrito si no existe (para contadores)
 if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
 }
 
-// Cargar productos destacados (los 6 más recientes/activos, con imágenes)
 $productos_destacados = [];
 try {
     $sql = "
-        SELECT p.*, u.nombre as vendedor, i.url as imagen_url 
+        SELECT p.*, u.nombre as vendedor, 
+               (SELECT url FROM imagenes WHERE id_producto = p.id_producto ORDER BY id_imagen DESC LIMIT 1) as imagen_url 
         FROM productos p 
         JOIN usuarios u ON p.id_usuario = u.id_usuario 
-        LEFT JOIN (
-            SELECT id_producto, url 
-            FROM imagenes 
-            GROUP BY id_producto 
-            ORDER BY id_imagen DESC
-        ) i ON p.id_producto = i.id_producto 
         WHERE p.activo = 1 AND p.stock > 0
         ORDER BY p.fecha_creacion DESC 
         LIMIT 6
@@ -37,7 +30,6 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adminia - Tu Tienda Online</title>
-    <!-- Bootstrap CDN para diseño responsive (opcional: quita si no quieres) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +48,6 @@ try {
             line-height: 1.6;
         }
         
-        /* Navbar estilo PrestaShop */
         .navbar {
             background-color: #ffffff !important;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -81,7 +72,6 @@ try {
             color: #2F80ED !important;
         }
         
-        /* Hero Section estilo PrestaShop */
         .hero { 
             background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
             color: white; 
@@ -156,7 +146,6 @@ try {
             transform: translateY(-2px);
         }
         
-        /* Productos Grid */
         .productos-grid { 
             padding: 80px 0;
             background-color: #F8F9FA;
@@ -267,7 +256,6 @@ try {
             box-shadow: 0 6px 16px rgba(47, 128, 237, 0.4);
         }
         
-        /* Footer estilo PrestaShop */
         footer { 
             background: #25282B;
             color: #ffffff; 
@@ -291,14 +279,12 @@ try {
             font-size: 0.95rem;
         }
         
-        /* Alerts */
         .alert {
             border-radius: 8px;
             border: none;
             font-weight: 500;
         }
         
-        /* Input styling */
         input[type="number"] {
             border: 1px solid #E0E0E0;
             border-radius: 6px;
@@ -311,7 +297,6 @@ try {
             border-color: #2F80ED;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
@@ -330,7 +315,6 @@ try {
 <body>
     <?php include 'includes/navbar.php'; ?>
 
-    <!-- Sección Hero (bienvenida principal) -->
     <section class="hero">
         <div class="container">
             <h1>Bienvenido a Adminia</h1>
@@ -345,7 +329,6 @@ try {
         </div>
     </section>
 
-    <!-- Productos Destacados (grid como en PrestaShop) -->
     <section class="productos-grid container">
         <h2 class="text-center mb-4">Productos Destacados</h2>
         <?php if (isset($error)): ?>
@@ -379,13 +362,11 @@ try {
         <?php endif; ?>
     </section>
 
-    <!-- Footer (pie de página) -->
     <footer>
         <div class="container text-center">
             <p>&copy; 2025 Adminia | <a href="sobre-nosotros.php">Sobre Nosotros</a> | Proyecto Académico</p>
         </div>
     </footer>
-  
-    <!-- Bootstrap JS (para navbar responsive) -->
+ 
 </body>
 </html>
